@@ -130,7 +130,7 @@ $ docker built -t [生成するイメージ名]:[タグ名] [Dockerfileの場所
 ```Dockerfile
 FROM [ イメージ名 ] : [ タグ名 ]
 ```
-* RUNコマンド → イメージのレイヤーを考えて、1行でかけるときは1行にするのが望ましい
+* `RUN` : イメージのレイヤーを考えて、1行でかけるときは1行にするのが望ましい
 ```Dockerfile
 ■シェル形式(/bin/sh)
 RUN apt-get install -y nginx
@@ -139,3 +139,43 @@ RUN apt-get install -y nginx
 RUN [“/bin/bash”,“-c”,”apt-get install -y nginx”]
 →引数で文字列を渡すときはシングルクォーテーションを使うこと
 ```
+* `CMD(デーモンの実行)` : 生成したコンテナ内でコマンドを実行可能。Dockerfileに1つのCMD命令を記述可能。複数記載の場合、最後のコマンドのみ有効。
+```Dockerfile
+■Exec形式
+CMD [“nginx”, “-g”, “daemon off;”]
+
+■シェル形式
+CMD nging -g ‘daemon off;’
+```
+* `ENTRYPOINT(デーモンの実行)` : runコマンドを実行した時に実行される。記述方法は、CMDと同様だが、CMDとの違いは下記。
+```Dockerfile
+■CMD
+dockerのrunコマンド実行時に引数で新たなコマンドを指定した場合、そちらを優先する
+
+■ENTRYPOINT
+この命令で指定したコマンドは、必ずコンテナで実行されるが、実行時にコマンド引数を指定したいときは、CMD命令と組み合わせて利用
+```
+* `ONBUILD`
+  * ビルド完了時に実行される命令
+  * 次のビルドで実行されるコマンドをイメージ内に設定するための命令
+  * ベースイメージからイメージを作るときなど(inspectコマンドで確認可能)
+* `ENV` : 環境変数の設定
+```Dockerfile
+ENV [key] [value]
+ENV [key]=[value](こちらは一度に複数設定可能)
+→runコマンド実行時に- -envで変更可能
+```
+* `WORKDIR` : 作業ディレクトリの指定、Dockerfile内で複数回使用可能
+* `LABEL` : maintainer、version、descriptionなどをつける時に利用
+```Dockerfile
+LABEL <キー名>=<値>
+```
+* `EXPOSE` : ポートの設定
+* `ARG` : Dockerfile内で使用する変数設定( `--build-arg` とかでビルド時に変更可能)
+* `VOLUME` : イメージにボリュームを割り当てる
+* `ADD` : ファイルやディレクトリの追加、ホストのファイルがtarやgzipの時はディレクトリとして展開される。
+```Dockerfile
+ADD <ホストのファイルパス> <Dockerイメージのファイルパス>
+```
+* `COPY` : ファイルのコピー、構文はADDと同じで、ADDはリモート上のファイル配置に使えるが、ホスト上の時は基本的にCOPYでOKみたい。
+* `.dockerignore` : ビルドで除外したいファイル名を記述できる
