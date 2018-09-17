@@ -13,7 +13,7 @@ $ docker image ls [オプション: -all, -a 全て、-q イメージIDのみ]
 ```
 * イメージの詳細情報表示
 ```shell
-docker image inspect [--format=“{{ .hoge}}”] イメージ名
+$ docker image inspect [--format=“{{ .hoge}}”] イメージ名
 ```
 * イメージのタグ設定
 ```shell
@@ -122,5 +122,20 @@ $ docker system prune [オプション: -a 全て、-f 強制]
 $ docker built -t [生成するイメージ名]:[タグ名] [Dockerfileの場所]
 ```
 * ビルドオプション
-　　* `-f` : Dockerfileを指定
- * `--no-cache` : 中間イメージなどでキャッシュを使いたくないときに指定
+  * `-f` : Dockerfileを指定
+  * `--no-cache` : 中間イメージなどでキャッシュを使いたくないときに指定
+
+## Dockerfile
+* ベースイメージの指定
+```Dockerfile
+FROM [ イメージ名 ] : [ タグ名 ]
+```
+* RUNコマンド → イメージのレイヤーを考えて、1行でかけるときは1行にするのが望ましい
+```Dockerfile
+■シェル形式(/bin/sh)
+RUN apt-get install -y nginx
+
+■Exec形式(json形式)
+RUN [“/bin/bash”,“-c”,”apt-get install -y nginx”]
+→引数で文字列を渡すときはシングルクォーテーションを使うこと
+```
