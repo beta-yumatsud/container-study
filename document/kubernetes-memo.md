@@ -1,5 +1,5 @@
 ## 概要
-kubernates(以下k8s)を勉強した時のメモを記載。
+kubernetes(以下k8s)を勉強した時のメモを記載。
 
 ## kubectl
 * バージョン
